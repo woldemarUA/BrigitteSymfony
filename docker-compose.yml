@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+  web:
+    build: ./www
+    ports:
+      - '80:80'
+    volumes:
+      - ./my_brigitte_project:/var/www/html/
+    networks:
+      - brigitte_symfony
+
+  db:
+    image: mysql:8.0.36
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: woldemar
+      MYSQL_DATABASE: animal_refuge_db
+    volumes:
+      - dbdata:/var/lib/mysql
+      # - ./db/db.sql:/docker-entrypoint-initdb.d/db.sql
+    networks:
+      - brigitte_symfony
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - '81:80'
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: woldemar
+    networks:
+      - brigitte_symfony
+
+networks:
+  brigitte_symfony:
+
+volumes:
+  dbdata:
